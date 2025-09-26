@@ -1,0 +1,1336 @@
+local ErrorHandlingLayer1 = pcall(function()
+local ErrorHandlingLayer2 = xpcall(function()
+
+local Rayfield = loadstring(game:HttpGet('https://sirius.menu/rayfield'))()
+local MainLoaded = false
+local UIEnabled = true
+local BackupValues = {}
+local PlaceholderText = ""
+
+local function CreateBackup(key, value)
+    BackupValues[key] = value
+end
+
+local function GetBackup(key, default)
+    return BackupValues[key] or default
+end
+
+local function GlitchPrevent1(callback)
+    local success, result = pcall(function()
+        return callback()
+    end)
+    if not success then
+        warn("GlitchPrevent1 caught error: " .. tostring(result))
+        return false
+    end
+    return result
+end
+
+local function GlitchPrevent2(callback)
+    local MaxRetries = 3
+    local retries = 0
+    
+    while retries < MaxRetries do
+        local success, result = pcall(callback)
+        if success then
+            return result
+        end
+        retries = retries + 1
+        task.wait(0.1)
+    end
+    
+    return false
+end
+
+local function GlitchPrevent3(callback)
+    local success, result = pcall(callback)
+    if not success then
+        task.spawn(function()
+            task.wait(0.5)
+            pcall(callback)
+        end)
+        return false
+    end
+    return result
+end
+
+local function GlitchPrevent4(callback)
+    local BackupResult = nil
+    local success, result = pcall(function()
+        local r = callback()
+        BackupResult = r
+        return r
+    end)
+    
+    if not success then
+        return BackupResult
+    end
+    
+    return result
+end
+
+local Window = GlitchPrevent1(function()
+    return Rayfield:CreateWindow({
+        Name = "Astral.lua",
+        LoadingTitle = "Astral.lua",
+        LoadingSubtitle = "by baconscript_",
+        ConfigurationSaving = {
+            Enabled = true,
+            FolderName = nil,
+            FileName = "Astral"
+        },
+        KeySystem = false,
+        KeySettings = {
+            Title = "Astral",
+            Subtitle = "Key System",
+            Note = "No method of obtaining the key is provided",
+            FileName = "AstralKey",
+            SaveKey = true,
+            GrabKeyFromSite = false,
+            Key = "Hello"
+        }
+    })
+end)
+
+if not Window then
+    repeat
+        task.wait(0.5)
+        Window = GlitchPrevent1(function()
+            return Rayfield:CreateWindow({
+                Name = "Astral.lua",
+                LoadingTitle = "Astral.lua",
+                LoadingSubtitle = "by baconscript_",
+                ConfigurationSaving = {
+                    Enabled = true,
+                    FolderName = nil,
+                    FileName = "Astral"
+                },
+                KeySystem = false
+            })
+        end)
+    until Window
+end
+
+local CombatTab = Window:CreateTab("Combat", 4483362458)
+local ModsTab = Window:CreateTab("Mods", 4483362458)
+local VisualizationTab = Window:CreateTab("Visualization", 4483362458)
+local ConfigsTab = Window:CreateTab("Configs", 4483362458)
+
+local hitsounds = {
+    {name = "bell.wav", url = "https://github.com/nyulachan/nyula/blob/main/Sounds/bell.wav?raw=true"},
+    {name = "bepis.wav", url = "https://github.com/nyulachan/nyula/blob/main/Sounds/bepis.wav?raw=true"},
+    {name = "bubble.wav", url = "https://github.com/nyulachan/nyula/blob/main/Sounds/bubble.wav?raw=true"},
+    {name = "cock.wav", url = "https://github.com/nyulachan/nyula/blob/main/Sounds/cock.wav?raw=true"},
+    {name = "cod.wav", url = "https://github.com/nyulachan/nyula/blob/main/Sounds/cod.wav?raw=true"},
+    {name = "fatality.wav", url = "https://github.com/nyulachan/nyula/blob/main/Sounds/fatality.wav?raw=true"},
+    {name = "phonk.wav", url = "https://github.com/nyulachan/nyula/blob/main/Sounds/phonk.wav?raw=true"},
+    {name = "sparkle.wav", url = "https://github.com/nyulachan/nyula/blob/main/Sounds/sparkle.wav?raw=true"}
+}
+
+local function DownloadSounds()
+    GlitchPrevent2(function()
+        if not isfolder("hitsounds") then
+            makefolder("hitsounds")
+        end
+
+        for _, sound in pairs(hitsounds) do
+            local path = "hitsounds" .. "/" .. sound.name
+            if not isfile(path) then
+                writefile(path, game:HttpGet(sound.url))
+            end
+        end
+    end)
+end
+
+DownloadSounds()
+
+local ScreenGui = Instance.new("ScreenGui")
+local Frame = Instance.new("Frame")
+local TextButton = Instance.new("TextButton")
+local UITextSizeConstraint = Instance.new("UITextSizeConstraint")
+
+ScreenGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+ScreenGui.ZIndexBehavior = Enum.ZIndexBehavior.Sibling
+ScreenGui.ResetOnSpawn = false
+
+Frame.Parent = ScreenGui
+Frame.BackgroundColor3 = Color3.fromRGB(48, 113, 169)
+Frame.BackgroundTransparency = 0
+Frame.Position = UDim2.new(1, -120, 0, 0)
+Frame.Size = UDim2.new(0, 100, 0, 50)
+
+TextButton.Parent = Frame
+TextButton.BackgroundColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.BackgroundTransparency = 1.000
+TextButton.Size = UDim2.new(1, 0, 1, 0)
+TextButton.Font = Enum.Font.SourceSans
+TextButton.Text = "Astral"
+TextButton.TextColor3 = Color3.fromRGB(0, 0, 0)
+TextButton.TextScaled = true
+TextButton.TextSize = 30
+TextButton.TextStrokeColor3 = Color3.fromRGB(255, 255, 255)
+TextButton.TextStrokeTransparency = 0.000
+TextButton.TextWrapped = true
+TextButton.MouseButton1Down:Connect(function()
+    GlitchPrevent1(function()
+        UIEnabled = not UIEnabled
+        if UIEnabled then
+            Rayfield:Notify({
+                Title = "Astral.lua",
+                Content = "UI Enabled",
+                Duration = 1.5,
+                Image = 4483362458
+            })
+        else
+            Rayfield:Notify({
+                Title = "Astral.lua",
+                Content = "UI Disabled",
+                Duration = 1.5,
+                Image = 4483362458
+            })
+        end
+        Rayfield:ToggleWindow(UIEnabled)
+    end)
+end)
+
+UITextSizeConstraint.Parent = TextButton
+UITextSizeConstraint.MaxTextSize = 30
+
+local player = game.Players.LocalPlayer
+
+local function onCharacterAdded(character)
+    GlitchPrevent1(function()
+        ScreenGui.Parent = player.PlayerGui
+    end)
+end
+
+local function connectCharacterAdded()
+    GlitchPrevent1(function()
+        player.CharacterAdded:Connect(onCharacterAdded)
+    end)
+end
+
+connectCharacterAdded()
+
+player.CharacterRemoving:Connect(function()
+    GlitchPrevent1(function()
+        ScreenGui.Parent = nil
+    end)
+end)
+
+local LocalSection = ModsTab:CreateSection("Local")
+local AntiSection = ModsTab:CreateSection("Anti")
+local CSyncSection = ModsTab:CreateSection("CSync")
+local FunSection = ModsTab:CreateSection("Fun")
+
+ModsTab:CreateButton({
+   Name = "CFrame Speed",
+   Callback = function()
+      GlitchPrevent1(function()
+          getgenv().Speed = false
+          getgenv().SpeedAmount = 2
+          
+          local SpeedGui = Instance.new("ScreenGui")
+          SpeedGui.Parent = game.Players.LocalPlayer:WaitForChild("PlayerGui")
+          SpeedGui.ResetOnSpawn = false
+          SpeedGui.Name = "SpeedGui"
+
+          local ToggleButton = Instance.new("TextButton")
+          ToggleButton.Text = "Toggle Speed"
+          ToggleButton.Parent = SpeedGui
+          ToggleButton.BackgroundTransparency = 0.5
+          ToggleButton.BorderSizePixel = 0
+          ToggleButton.Position = UDim2.new(1, -120, 0, 55)
+          ToggleButton.Size = UDim2.new(0, 100, 0, 18)
+          ToggleButton.BackgroundColor3 = Color3.fromRGB(48, 113, 169)
+          ToggleButton.TextColor3 = Color3.fromRGB(255, 255, 255)
+
+          local UICorner = Instance.new("UICorner")
+          UICorner.Parent = ToggleButton
+
+          ToggleButton.MouseButton1Click:Connect(function()
+             getgenv().Speed = not getgenv().Speed
+          end)
+
+          game:GetService("RunService").Stepped:Connect(function()
+             if getgenv().Speed then
+                local lPlr = game:GetService("Players").LocalPlayer
+                if lPlr.Character and lPlr.Character:FindFirstChild("HumanoidRootPart") and lPlr.Character:FindFirstChild("Humanoid") then
+                    lPlr.Character.HumanoidRootPart.CFrame = lPlr.Character.HumanoidRootPart.CFrame + lPlr.Character.Humanoid.MoveDirection * getgenv().SpeedAmount
+                end
+             end
+          end)
+      end)
+   end
+})
+
+ModsTab:CreateInput({
+   Name = "Speed Amount",
+   PlaceholderText = "2",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+      GlitchPrevent1(function()
+          getgenv().SpeedAmount = tonumber(Text) or 2
+          CreateBackup("SpeedAmount", getgenv().SpeedAmount)
+      end)
+   end,
+})
+
+ModsTab:CreateButton({
+   Name = "Save Speed",
+   Callback = function()
+      GlitchPrevent1(function()
+          Rayfield:Notify({
+              Title = "Speed Saved",
+              Content = "Speed Amount: " .. tostring(getgenv().SpeedAmount),
+              Duration = 3,
+          })
+      end)
+   end,
+})
+
+local TargetSection = CombatTab:CreateSection("Target Lock")
+
+CombatTab:CreateButton({
+   Name = "Load Target",
+   Callback = function()
+      GlitchPrevent3(function()
+          if getgenv().Settings then return end
+          
+          getgenv().Settings = {
+             NyulaRemake = {
+                Enabled = true,
+                PREDICTION = 0.14284,
+                JUMPPREDICTION = 0.1184,
+                DOT = true,
+                AIRSHOT = false,
+                NOTIF = true,
+                AUTOPRED = false,
+                FOV = math.huge,
+                RESOLVER = false,
+                LOCKTYPE = "Index",
+                Resolver = {
+                      Enabled = false,
+                      Type = "None",
+                },
+                OnHit = {
+                     Enabled = false,
+                     Hitchams = {
+                           Enabled = false,
+                           Color = Color3.fromRGB(255,255,255),
+                     },
+                    Hitsounds = {
+                          Enabled = false,
+                          Sound = "hitsounds/sparkle.wav",
+                    },
+                }
+             }
+          }
+
+          local SelectedPart = "HumanoidRootPart"
+          local Prediction = true
+          local AnchorCount = 0
+          local MaxAnchor = 50
+          local CC = game:GetService"Workspace".CurrentCamera
+          local Plr;
+          local enabled = false
+          local mouse = game.Players.LocalPlayer:GetMouse()
+          local placemarker = Instance.new("Part", game.Workspace)
+          local currentClone = nil
+          
+          local function makemarker(Parent, Adornee, Color, Size, Size2)
+              local e = Instance.new("BillboardGui", Parent)
+              e.Name = "PP"
+              e.Adornee = Adornee
+              e.Size = UDim2.new(Size, Size2, Size, Size2)
+              e.AlwaysOnTop = getgenv().Settings.NyulaRemake.DOT
+              local a = Instance.new("Frame", e)
+              if getgenv().Settings.NyulaRemake.DOT == true then
+                  a.Size = UDim2.new(1, 1, 1, 1)
+              else
+                  a.Size = UDim2.new(0, 0, 0, 0)
+              end
+              if getgenv().Settings.NyulaRemake.DOT == true then
+                  a.Transparency = 0
+                  a.BackgroundTransparency = 0
+              else
+                  a.Transparency = 1
+                  a.BackgroundTransparency = 1
+              end
+              a.BackgroundColor3 = Color
+              local g = Instance.new("UICorner", a)
+              if getgenv().Settings.NyulaRemake.DOT == false then
+                  g.CornerRadius = UDim.new(1, 1)
+              else
+                  g.CornerRadius = UDim.new(1, 1) 
+              end
+              return(e)
+          end
+
+          local data = game.Players:GetPlayers()
+          function noob(player)
+              local character
+              repeat task.wait() until player.Character
+              local handler = makemarker(placemarker, player.Character:WaitForChild(SelectedPart), Color3.fromRGB(107, 184, 255), 0.3, 3)
+              handler.Name = player.Name
+              player.CharacterAdded:connect(function(Char) handler.Adornee = Char:WaitForChild(SelectedPart) end)
+          end
+
+          for i = 1, #data do
+              if data[i] ~= game.Players.LocalPlayer then
+                  noob(data[i])
+              end
+          end
+
+          game.Players.PlayerAdded:connect(function(Player)
+              noob(Player)
+          end)
+
+          spawn(function()
+              placemarker.Anchored = true
+              placemarker.CanCollide = false
+              if getgenv().Settings.NyulaRemake.DOT == true then
+                  placemarker.Size = Vector3.new(0, 0, 0)
+              else
+                  placemarker.Size = Vector3.new(0, 0, 0)
+              end
+              placemarker.Transparency = 0.75
+              if getgenv().Settings.NyulaRemake.DOT then
+                  makemarker(placemarker, placemarker, Color3.fromRGB(48, 113, 169), 1, 0)
+              end
+          end)
+
+          local Tool = Instance.new("Tool")
+          Tool.RequiresHandle = false
+          Tool.Name = "Astral Lock"
+          Tool.Parent = game.Players.LocalPlayer.Backpack
+
+          local function connectCharacterAdded()
+              player.CharacterAdded:Connect(function(char)
+                  if Tool then
+                      Tool.Parent = game.Players.LocalPlayer.Backpack
+                  end
+              end)
+          end
+
+          connectCharacterAdded()
+
+          player.CharacterRemoving:Connect(function()
+              if Tool then
+                  Tool.Parent = game.Players.LocalPlayer.Backpack
+              end
+          end)
+
+          function hitchams(gay) 
+              if currentClone then
+                  currentClone:Destroy()
+              end
+
+              gay.Character.Archivable = true
+              local Clone = gay.Character:Clone()           
+              for _, Obj in next, Clone:GetDescendants() do
+                  if Obj.Name == "HumanoidRootPart" or Obj:IsA("Humanoid") or Obj:IsA("LocalScript") or Obj:IsA("Script") or Obj:IsA("Decal") then
+                      Obj:Destroy()
+                  elseif Obj:IsA("BasePart") or Obj:IsA("MeshPart") or Obj:IsA("Part") then
+                      if Obj.Transparency == 1 then
+                          Obj:Destroy()
+                      else
+                          Obj.CanCollide = false
+                          Obj.Anchored = true
+                          Obj.Material = Enum.Material.ForceField
+                          Obj.Color = getgenv().Settings.NyulaRemake.OnHit.Hitchams.Color
+                          Obj.Transparency = 0
+                          Obj.Size = Obj.Size + Vector3.new(0.03, 0.03, 0.03)
+                      end
+                  end
+              end
+              Clone.Parent = workspace
+              currentClone = Clone
+              local start = tick()
+              local connection
+              connection = game:GetService("RunService").Heartbeat:Connect(function()
+                  if tick() - start >= 3 then
+                      connection:Disconnect() 
+                      Clone:Destroy()
+                      currentClone = nil
+                  end
+              end)
+          end
+
+          Tool.Activated:Connect(function()
+              if getgenv().Settings.NyulaRemake.Enabled then
+                  if enabled == true then
+                      enabled = false
+                      if getgenv().Settings.NyulaRemake.NOTIF == true then
+                          Plr = getClosestPlayerToCursor()
+                          local las = Instance.new("Sound")
+                          las.Parent = nil
+                          Rayfield:Notify({
+                              Title = "Astral.lua",
+                              Content = "Unlocked",
+                              Duration = 3,
+                          })
+                      end
+                  else
+                      Plr = getClosestPlayerToCursor()
+                      enabled = true
+                      if Plr and Plr.Character then
+                          local char = Plr.Character
+                          if char:FindFirstChild("Humanoid") then
+                              local hum = char:FindFirstChild("Humanoid")
+                              local oldHealth = hum.Health
+                              
+                              hum.HealthChanged:Connect(function(newHealth)
+                                  if newHealth < oldHealth then
+                                      if getgenv().Settings.NyulaRemake.OnHit.Hitsounds.Enabled then
+                                          local las = Instance.new("Sound")
+                                          las.Name = "a"
+                                          las.Volume = 1
+                                          las.SoundId = getcustomasset(getgenv().Settings.NyulaRemake.OnHit.Hitsounds.Sound)
+                                          las.Parent = game:GetService("SoundService")
+                                          las.Playing = true
+                                      end
+                                      if getgenv().Settings.NyulaRemake.OnHit.Hitchams.Enabled then
+                                          hitchams(Plr)
+                                      end
+                                      oldHealth = newHealth
+                                  end
+                              end)
+                          end
+                          
+                          if getgenv().Settings.NyulaRemake.NOTIF == true then
+                              Rayfield:Notify({
+                                  Title = "Astral.lua",
+                                  Content = "Target: "..tostring(Plr.Character.Humanoid.DisplayName),
+                                  Duration = 3,
+                              })
+                          end
+                      end
+                  end
+              end
+          end)
+
+          function getClosestPlayerToCursor()
+              local closestPlayer
+              local shortestDistance = getgenv().Settings.NyulaRemake.FOV
+
+              for i, v in pairs(game.Players:GetPlayers()) do
+                  if v ~= game.Players.LocalPlayer and v.Character and v.Character:FindFirstChild("Humanoid") and v.Character.Humanoid.Health ~= 0 and v.Character:FindFirstChild("HumanoidRootPart") then
+                      local pos = CC:WorldToViewportPoint(v.Character.PrimaryPart.Position)
+                      local magnitude = (Vector2.new(pos.X, pos.Y) - Vector2.new(mouse.X, mouse.Y)).magnitude
+                      if magnitude < shortestDistance then
+                          closestPlayer = v
+                          shortestDistance = magnitude
+                      end
+                  end
+              end
+              return closestPlayer
+          end
+
+          local pingvalue = nil;
+          local split = nil;
+          local ping = nil;
+
+          local LocalHL = Instance.new("Highlight") 
+          
+          game:GetService"RunService".Stepped:connect(function()
+              if enabled and Plr and Plr.Character ~= nil and Plr.Character:FindFirstChild("HumanoidRootPart") then
+                  placemarker.CFrame = CFrame.new(Plr.Character.HumanoidRootPart.Position+Vector3.new(Plr.Character.HumanoidRootPart.AssemblyLinearVelocity.X*getgenv().Settings.NyulaRemake.PREDICTION,Plr.Character.HumanoidRootPart.AssemblyLinearVelocity.Y*getgenv().Settings.NyulaRemake.JUMPPREDICTION,Plr.Character.HumanoidRootPart.AssemblyLinearVelocity.Z*getgenv().Settings.NyulaRemake.PREDICTION))         
+                  LocalHL.Parent = Plr.Character
+                  LocalHL.FillTransparency = 0.2
+                  LocalHL.FillColor = Color3.fromRGB(48, 113, 169)
+                  LocalHL.OutlineColor = Color3.fromRGB(0,0,0)
+              else
+                  placemarker.CFrame = CFrame.new(0, 9999, 0)
+                  LocalHL.Parent = nil
+              end
+              
+              if getgenv().Settings.NyulaRemake.AUTOPRED == true then
+                  pingvalue = game:GetService("Stats").Network.ServerStatsItem["Data Ping"]:GetValueString()
+                  split = string.split(pingvalue,'(')
+                  ping = tonumber(split[1])
+                  if ping < 200 then
+                      getgenv().Settings.NyulaRemake.PREDICTION = 0.197343243234332
+                      getgenv().Settings.NyulaRemake.JUMPPREDICTION = tostring(ping/1500)
+                  elseif ping < 170 then
+                      getgenv().Settings.NyulaRemake.PREDICTION = 0.164713
+                      getgenv().Settings.NyulaRemake.JUMPPREDICTION = tostring(ping/1500)
+                  elseif ping < 160 then
+                      getgenv().Settings.NyulaRemake.PREDICTION = 0.16142
+                      getgenv().Settings.NyulaRemake.JUMPPREDICTION = tostring(ping/1500)
+                  elseif ping < 150 then
+                      getgenv().Settings.NyulaRemake.PREDICTION = 0.157041
+                      getgenv().Settings.NyulaRemake.JUMPPREDICTION = tostring(ping/1500)
+                  elseif ping < 140 then
+                      getgenv().Settings.NyulaRemake.PREDICTION = 0.154313
+                      getgenv().Settings.NyulaRemake.JUMPPREDICTION = tostring(ping/1500)
+                  elseif ping < 130 then
+                      getgenv().Settings.NyulaRemake.PREDICTION = 0.151692
+                      getgenv().Settings.NyulaRemake.JUMPPREDICTION = tostring(ping/1500)
+                  elseif ping < 120 then
+                      getgenv().Settings.NyulaRemake.PREDICTION = 0.14917
+                      getgenv().Settings.NyulaRemake.JUMPPREDICTION = tostring(ping/1500)
+                  elseif ping < 110 then
+                      getgenv().Settings.NyulaRemake.PREDICTION = 0.146
+                      getgenv().Settings.NyulaRemake.JUMPPREDICTION = tostring(ping/1500)
+                  elseif ping < 100 then
+                      getgenv().Settings.NyulaRemake.PREDICTION = 0.142987
+                      getgenv().Settings.NyulaRemake.JUMPPREDICTION = tostring(ping/1500)
+                  elseif ping < 80 then
+                      getgenv().Settings.NyulaRemake.PREDICTION = 0.140340
+                      getgenv().Settings.NyulaRemake.JUMPPREDICTION = tostring(ping/1500)
+                  elseif ping < 70 then
+                      getgenv().Settings.NyulaRemake.PREDICTION = 0.12633
+                      getgenv().Settings.NyulaRemake.JUMPPREDICTION = tostring(ping/1500)
+                  elseif ping < 65 then
+                      getgenv().Settings.NyulaRemake.PREDICTION = 0.1274236
+                      getgenv().Settings.NyulaRemake.JUMPPREDICTION = tostring(ping/1500)
+                  elseif ping < 50 then
+                      getgenv().Settings.NyulaRemake.PREDICTION = 0.13644
+                      getgenv().Settings.NyulaRemake.JUMPPREDICTION = tostring(ping/1500)
+                  elseif ping < 30 then
+                      getgenv().Settings.NyulaRemake.PREDICTION = 0.11452476
+                      getgenv().Settings.NyulaRemake.JUMPPREDICTION = tostring(ping/1500)
+                  end
+              end
+          end)
+
+          local mt = getrawmetatable(game)
+          local old = mt.__namecall
+          setreadonly(mt, false)
+          mt.__namecall = newcclosure(function(...)
+              local args = {...}
+              local vap = {"UpdateMousePos", "GetMousePos", "MousePos", "MOUSE", "MousePosUpdate"}
+              if enabled and getnamecallmethod() == "FireServer" and table.find(vap, args[2]) and getgenv().Settings.NyulaRemake.Enabled and Plr and Plr.Character ~= nil and getgenv().Settings.NyulaRemake.LOCKTYPE == "Namecall" then
+                  if Prediction == true then
+                      args[3] = Plr.Character.HumanoidRootPart.Position+Vector3.new(Plr.Character.HumanoidRootPart.AssemblyLinearVelocity.X*getgenv().Settings.NyulaRemake.PREDICTION,Plr.Character.HumanoidRootPart.AssemblyLinearVelocity.Y*getgenv().Settings.NyulaRemake.JUMPPREDICTION,Plr.Character.HumanoidRootPart.AssemblyLinearVelocity.Z*getgenv().Settings.NyulaRemake.PREDICTION)
+                  else
+                      args[3] = Plr.Character[SelectedPart].Position
+                  end
+                  return old(unpack(args))
+              end
+              return old(...)
+          end)
+
+          game:GetService("RunService").RenderStepped:Connect(function()
+              if getgenv().Settings.NyulaRemake.RESOVLER == true and Plr and Plr.Character ~= nil and enabled and getgenv().Settings.NyulaRemake.Enabled then
+                  if getgenv().Settings.NyulaRemake.AIRSHOT == true and enabled and Plr.Character ~= nil then
+                      if Plr.Character:FindFirstChild("Humanoid") and Plr.Character.Humanoid:GetState() == Enum.HumanoidStateType.Freefall then
+                          if Plr.Character ~= nil and Plr.Character.HumanoidRootPart.Anchored == true then
+                              AnchorCount = AnchorCount + 1
+                              if AnchorCount >= MaxAnchor then
+                                  Prediction = false
+                                  task.wait(2)
+                                  AnchorCount = 0;
+                              end
+                          else
+                              Prediction = true
+                              AnchorCount = 0;
+                          end
+                          SelectedPart = "LeftFoot"
+                      else
+                          if Plr.Character ~= nil and Plr.Character.HumanoidRootPart.Anchored == true then
+                              AnchorCount = AnchorCount + 1
+                              if AnchorCount >= MaxAnchor then
+                                  Prediction = false
+                                  task.wait(2)
+                                  AnchorCount = 0;
+                              end
+                          else
+                              Prediction = true
+                              AnchorCount = 0;
+                          end
+                          SelectedPart = "HumanoidRootPart"
+                      end
+                  else
+                      if Plr.Character ~= nil and Plr.Character.HumanoidRootPart.Anchored == true then
+                          AnchorCount = AnchorCount + 1
+                          if AnchorCount >= MaxAnchor then
+                              Prediction = false
+                              task.wait(2)
+                              AnchorCount = 0;
+                          end
+                      else
+                          Prediction = true
+                          AnchorCount = 0;
+                      end
+                      SelectedPart = "HumanoidRootPart"
+                  end
+              else
+                  SelectedPart = "HumanoidRootPart"
+              end
+          end)
+
+          local Hooks = {}
+          local Client = game.Players.LocalPlayer
+
+          Hooks[1] = hookmetamethod(Client:GetMouse(), "__index", newcclosure(function(self, index)
+              if index == "Hit" and getgenv().Settings.NyulaRemake.LOCKTYPE == "Index" and enabled and Plr and Plr.Character ~= nil and getgenv().Settings.NyulaRemake.Enabled then
+                  local position = CFrame.new(Plr.Character.HumanoidRootPart.Position+Vector3.new(Plr.Character.HumanoidRootPart.AssemblyLinearVelocity.X*getgenv().Settings.NyulaRemake.PREDICTION,Plr.Character.HumanoidRootPart.AssemblyLinearVelocity.Y*getgenv().Settings.NyulaRemake.JUMPPREDICTION,Plr.Character.HumanoidRootPart.AssemblyLinearVelocity.Z*getgenv().Settings.NyulaRemake.PREDICTION))
+                  return position
+              end
+              return Hooks[1](self, index)
+          end))
+          
+          Rayfield:Notify({
+              Title = "Target Lock Loaded",
+              Content = "Press the tool to toggle target lock",
+              Duration = 6.5,
+              Image = 4483362458
+          })
+          
+          MainLoaded = true
+      end)
+   end
+})
+
+CombatTab:CreateDropdown({
+   Name = "Aim Type",
+   Options = {"Index", "Namecall"},
+   CurrentOption = "Index",
+   Flag = "AimType",
+   Callback = function(Option)
+      GlitchPrevent1(function()
+          if getgenv().Settings then
+              getgenv().Settings.NyulaRemake.LOCKTYPE = Option
+              CreateBackup("LOCKTYPE", Option)
+          end
+      end)
+   end,
+})
+
+CombatTab:CreateInput({
+   Name = "Prediction",
+   PlaceholderText = "0.14284",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+      GlitchPrevent1(function()
+          if getgenv().Settings then
+              getgenv().Settings.NyulaRemake.PREDICTION = tonumber(Text) or 0.14284
+              CreateBackup("PREDICTION", getgenv().Settings.NyulaRemake.PREDICTION)
+          end
+      end)
+   end,
+})
+
+CombatTab:CreateButton({
+   Name = "Save Prediction",
+   Callback = function()
+      GlitchPrevent1(function()
+          if getgenv().Settings then
+              Rayfield:Notify({
+                  Title = "Prediction Saved",
+                  Content = "Value: " .. tostring(getgenv().Settings.NyulaRemake.PREDICTION),
+                  Duration = 3,
+              })
+          else
+              Rayfield:Notify({
+                  Title = "Error",
+                  Content = "Load target first",
+                  Duration = 3,
+              })
+          end
+      end)
+   end,
+})
+
+CombatTab:CreateInput({
+   Name = "Jump Prediction",
+   PlaceholderText = "0.1184",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+      GlitchPrevent1(function()
+          if getgenv().Settings then
+              getgenv().Settings.NyulaRemake.JUMPPREDICTION = tonumber(Text) or 0.1184
+              CreateBackup("JUMPPREDICTION", getgenv().Settings.NyulaRemake.JUMPPREDICTION)
+          end
+      end)
+   end,
+})
+
+CombatTab:CreateButton({
+   Name = "Save Jump Prediction",
+   Callback = function()
+      GlitchPrevent1(function()
+          if getgenv().Settings then
+              Rayfield:Notify({
+                  Title = "Jump Prediction Saved",
+                  Content = "Value: " .. tostring(getgenv().Settings.NyulaRemake.JUMPPREDICTION),
+                  Duration = 3,
+              })
+          else
+              Rayfield:Notify({
+                  Title = "Error",
+                  Content = "Load target first",
+                  Duration = 3,
+              })
+          end
+      end)
+   end,
+})
+
+CombatTab:CreateToggle({
+   Name = "Auto Prediction",
+   CurrentValue = false,
+   Flag = "AutoPrediction",
+   Callback = function(Value)
+      GlitchPrevent1(function()
+          if getgenv().Settings then
+              getgenv().Settings.NyulaRemake.AUTOPRED = Value
+              CreateBackup("AUTOPRED", Value)
+          end
+      end)
+   end,
+})
+
+local OnHitSection = CombatTab:CreateSection("On Hit")
+
+CombatTab:CreateToggle({
+   Name = "Hitcham",
+   CurrentValue = false,
+   Flag = "Hitcham",
+   Callback = function(Value)
+      GlitchPrevent1(function()
+          if getgenv().Settings then
+              getgenv().Settings.NyulaRemake.OnHit.Hitchams.Enabled = Value
+              CreateBackup("Hitchams", Value)
+          end
+      end)
+   end,
+})
+
+CombatTab:CreateColorPicker({
+    Name = "Hitcham Color",
+    Color = Color3.fromRGB(255,255,255),
+    Flag = "HitchamColor",
+    Callback = function(Value)
+        GlitchPrevent1(function()
+            if getgenv().Settings then
+                getgenv().Settings.NyulaRemake.OnHit.Hitchams.Color = Value
+            end
+        end)
+    end
+})
+
+CombatTab:CreateToggle({
+   Name = "Hitsound",
+   CurrentValue = false,
+   Flag = "Hitsound",
+   Callback = function(Value)
+      GlitchPrevent1(function()
+          if getgenv().Settings then
+              getgenv().Settings.NyulaRemake.OnHit.Hitsounds.Enabled = Value
+              CreateBackup("Hitsound", Value)
+          end
+      end)
+   end,
+})
+
+CombatTab:CreateDropdown({
+   Name = "Hitsound Type",
+   Options = {"bell.wav", "bepis.wav", "bubble.wav", "cock.wav", "cod.wav", "fatality.wav", "phonk.wav", "sparkle.wav"},
+   CurrentOption = "sparkle.wav",
+   Flag = "HitsoundType",
+   Callback = function(Option)
+      GlitchPrevent1(function()
+          if getgenv().Settings then
+              getgenv().Settings.NyulaRemake.OnHit.Hitsounds.Sound = "hitsounds/" .. Option
+              CreateBackup("HitsoundType", Option)
+          end
+      end)
+   end,
+})
+
+local ResolverSection = CombatTab:CreateSection("Resolvers")
+
+CombatTab:CreateToggle({
+   Name = "Resolver Enabled",
+   CurrentValue = false,
+   Flag = "ResolverEnabled",
+   Callback = function(Value)
+      GlitchPrevent1(function()
+          if getgenv().Settings then
+              getgenv().Settings.NyulaRemake.Resolver.Enabled = Value
+              CreateBackup("ResolverEnabled", Value)
+          end
+      end)
+   end,
+})
+
+CombatTab:CreateDropdown({
+   Name = "Resolver Type",
+   Options = {"None", "Delta Time", "Recalculator", "No Y Velocity"},
+   CurrentOption = "None",
+   Flag = "ResolverType",
+   Callback = function(Option)
+      GlitchPrevent1(function()
+          if getgenv().Settings then
+              getgenv().Settings.NyulaRemake.Resolver.Type = Option
+              CreateBackup("ResolverType", Option)
+          end
+      end)
+   end,
+})
+
+CombatTab:CreateSection("Extra Settings")
+
+CombatTab:CreateToggle({
+   Name = "Show Dot",
+   CurrentValue = true,
+   Flag = "ShowDot",
+   Callback = function(Value)
+      GlitchPrevent1(function()
+          if getgenv().Settings then
+              getgenv().Settings.NyulaRemake.DOT = Value
+              CreateBackup("DOT", Value)
+          end
+      end)
+   end,
+})
+
+CombatTab:CreateToggle({
+   Name = "Airshot",
+   CurrentValue = false,
+   Flag = "Airshot",
+   Callback = function(Value)
+      GlitchPrevent1(function()
+          if getgenv().Settings then
+              getgenv().Settings.NyulaRemake.AIRSHOT = Value
+              CreateBackup("AIRSHOT", Value)
+          end
+      end)
+   end,
+})
+
+CombatTab:CreateToggle({
+   Name = "Notifications",
+   CurrentValue = true,
+   Flag = "Notifications",
+   Callback = function(Value)
+      GlitchPrevent1(function()
+          if getgenv().Settings then
+              getgenv().Settings.NyulaRemake.NOTIF = Value
+              CreateBackup("NOTIF", Value)
+          end
+      end)
+   end,
+})
+
+CombatTab:CreateInput({
+   Name = "FOV",
+   PlaceholderText = "math.huge",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+      GlitchPrevent1(function()
+          if getgenv().Settings then
+              if Text:lower() == "math.huge" or Text:lower() == "huge" then
+                  getgenv().Settings.NyulaRemake.FOV = math.huge
+              else
+                  getgenv().Settings.NyulaRemake.FOV = tonumber(Text) or math.huge
+              end
+              CreateBackup("FOV", getgenv().Settings.NyulaRemake.FOV)
+          end
+      end)
+   end,
+})
+
+ModsTab:CreateToggle({
+   Name = "No Slip",
+   CurrentValue = false,
+   Flag = "NoSlip",
+   Callback = function(Value)
+      GlitchPrevent1(function()
+          if Value then
+              for i,v in pairs(workspace:GetDescendants()) do
+                  if v:IsA("Part") then
+                      if v.Material == Enum.Material.Ice or v.Material == Enum.Material.Snow or v.Material == Enum.Material.Glacier then
+                          v.Material = Enum.Material.Plastic
+                          v.Color = v.Color
+                      end
+                  end
+              end
+              
+              workspace.DescendantAdded:Connect(function(v)
+                  if v:IsA("Part") then
+                      if v.Material == Enum.Material.Ice or v.Material == Enum.Material.Snow or v.Material == Enum.Material.Glacier then
+                          v.Material = Enum.Material.Plastic
+                          v.Color = v.Color
+                      end
+                  end
+              end)
+          end
+      end)
+   end,
+})
+
+ModsTab:CreateToggle({
+   Name = "Anti AFK",
+   CurrentValue = false,
+   Flag = "AntiAFK",
+   Callback = function(Value)
+      GlitchPrevent1(function()
+          if Value then
+              local VirtualUser = game:GetService("VirtualUser")
+              local Players = game:GetService("Players")
+              local LocalPlayer = Players.LocalPlayer
+              
+              LocalPlayer.Idled:Connect(function()
+                  VirtualUser:CaptureController()
+                  VirtualUser:ClickButton2(Vector2.new())
+              end)
+              
+              Rayfield:Notify({
+                  Title = "Anti AFK",
+                  Content = "Anti AFK is now active",
+                  Duration = 3,
+              })
+          end
+      end)
+   end,
+})
+
+ModsTab:CreateToggle({
+   Name = "Anti Fling",
+   CurrentValue = false,
+   Flag = "AntiFling", 
+   Callback = function(Value)
+      GlitchPrevent1(function()
+          if Value then
+              local Players = game:GetService("Players")
+              local RunService = game:GetService("RunService")
+              local LocalPlayer = Players.LocalPlayer
+              
+              RunService.Stepped:Connect(function()
+                  if LocalPlayer.Character and LocalPlayer.Character:FindFirstChild("HumanoidRootPart") then
+                      LocalPlayer.Character.HumanoidRootPart.CanCollide = false
+                  end
+              end)
+              
+              Rayfield:Notify({
+                  Title = "Anti Fling",
+                  Content = "Anti Fling is now active",
+                  Duration = 3,
+              })
+          end
+      end)
+   end,
+})
+
+ModsTab:CreateButton({
+   Name = "Remove Textures",
+   Callback = function()
+      GlitchPrevent1(function()
+          local RunService = game:GetService("RunService")
+          
+          RunService.RenderStepped:Connect(function()
+              for _,v in pairs(workspace:GetDescendants()) do
+                  if v:IsA("BasePart") and not v:IsA("MeshPart") then
+                      v.Material = Enum.Material.SmoothPlastic
+                  end
+              end
+          end)
+          
+          Rayfield:Notify({
+              Title = "Textures Removed",
+              Content = "All textures have been removed",
+              Duration = 3,
+          })
+      end)
+   end,
+})
+
+ConfigsTab:CreateSection("Configuration")
+
+ConfigsTab:CreateButton({
+   Name = "Save Config",
+   Callback = function()
+      GlitchPrevent1(function()
+          if getgenv().Settings then
+              local configName = "AstralConfig_" .. os.time() .. ".txt"
+              local configData = game:GetService("HttpService"):JSONEncode(getgenv().Settings)
+              
+              if writefile then
+                  writefile(configName, configData)
+                  Rayfield:Notify({
+                      Title = "Config Saved",
+                      Content = "Saved as " .. configName,
+                      Duration = 3,
+                  })
+              else
+                  Rayfield:Notify({
+                      Title = "Error",
+                      Content = "Your exploit does not support writefile",
+                      Duration = 3,
+                  })
+              end
+          else
+              Rayfield:Notify({
+                  Title = "Error",
+                  Content = "Load target first",
+                  Duration = 3,
+              })
+          end
+      end)
+   end,
+})
+
+ConfigsTab:CreateInput({
+   Name = "Config Name",
+   PlaceholderText = "AstralConfig.txt",
+   RemoveTextAfterFocusLost = false,
+   Callback = function(Text)
+      PlaceholderText = Text
+   end,
+})
+
+ConfigsTab:CreateButton({
+   Name = "Load Config",
+   Callback = function()
+      GlitchPrevent1(function()
+          if PlaceholderText ~= "" then
+              if readfile and isfile and isfile(PlaceholderText) then
+                  local success, configData = pcall(function()
+                      return game:GetService("HttpService"):JSONDecode(readfile(PlaceholderText))
+                  end)
+                  
+                  if success and configData then
+                      getgenv().Settings = configData
+                      Rayfield:Notify({
+                          Title = "Config Loaded",
+                          Content = "Loaded " .. PlaceholderText,
+                          Duration = 3,
+                      })
+                  else
+                      Rayfield:Notify({
+                          Title = "Error",
+                          Content = "Invalid config file",
+                          Duration = 3,
+                      })
+                  end
+              else
+                  Rayfield:Notify({
+                      Title = "Error",
+                      Content = "File does not exist or your exploit doesn't support readfile",
+                      Duration = 3,
+                  })
+              end
+          else
+              Rayfield:Notify({
+                  Title = "Error",
+                  Content = "Please enter a config name",
+                  Duration = 3,
+              })
+          end
+      end)
+   end,
+})
+
+ConfigsTab:CreateButton({
+   Name = "Reset All Settings",
+   Callback = function()
+      GlitchPrevent1(function()
+          if getgenv().Settings then
+              getgenv().Settings = {
+                 NyulaRemake = {
+                    Enabled = true,
+                    PREDICTION = 0.14284,
+                    JUMPPREDICTION = 0.1184,
+                    DOT = true,
+                    AIRSHOT = false,
+                    NOTIF = true,
+                    AUTOPRED = false,
+                    FOV = math.huge,
+                    RESOLVER = false,
+                    LOCKTYPE = "Index",
+                    Resolver = {
+                          Enabled = false,
+                          Type = "None",
+                    },
+                    OnHit = {
+                         Enabled = false,
+                         Hitchams = {
+                               Enabled = false,
+                               Color = Color3.fromRGB(255,255,255),
+                         },
+                        Hitsounds = {
+                              Enabled = false,
+                              Sound = "hitsounds/sparkle.wav",
+                        },
+                    }
+                 }
+              }
+              
+              Rayfield:Notify({
+                  Title = "Settings Reset",
+                  Content = "All settings have been reset to default",
+                  Duration = 3,
+              })
+          else
+              Rayfield:Notify({
+                  Title = "Error",
+                  Content = "Load target first",
+                  Duration = 3,
+              })
+          end
+      end)
+   end,
+})
+
+VisualizationTab:CreateSection("Visuals")
+
+VisualizationTab:CreateColorPicker({
+    Name = "Highlight Color",
+    Color = Color3.fromRGB(48, 113, 169),
+    Flag = "HighlightColor",
+    Callback = function(Value)
+        GlitchPrevent1(function()
+            local LocalHL = Instance.new("Highlight")
+            LocalHL.FillColor = Value
+            LocalHL.OutlineColor = Color3.fromRGB(0, 0, 0)
+            
+            for _, player in pairs(game.Players:GetPlayers()) do
+                if player ~= game.Players.LocalPlayer and player.Character then
+                    local clone = LocalHL:Clone()
+                    clone.Parent = player.Character
+                end
+            end
+            
+            game.Players.PlayerAdded:Connect(function(player)
+                player.CharacterAdded:Connect(function(char)
+                    local clone = LocalHL:Clone()
+                    clone.Parent = char
+                end)
+            end)
+        end)
+    end
+})
+
+VisualizationTab:CreateToggle({
+   Name = "ESP",
+   CurrentValue = false,
+   Flag = "ESP",
+   Callback = function(Value)
+      GlitchPrevent1(function()
+          if Value then
+              local Players = game:GetService("Players")
+              local RunService = game:GetService("RunService")
+              local LocalPlayer = Players.LocalPlayer
+              local Camera = workspace.CurrentCamera
+              
+              local function createESP(player)
+                  local ESP = Drawing.new("Text")
+                  ESP.Visible = false
+                  ESP.Center = true
+                  ESP.Outline = true
+                  ESP.Font = 2
+                  ESP.Size = 13
+                  ESP.Color = Color3.fromRGB(48, 113, 169)
+                  ESP.OutlineColor = Color3.fromRGB(0, 0, 0)
+                  
+                  RunService.RenderStepped:Connect(function()
+                      if player.Character and player.Character:FindFirstChild("Humanoid") and player.Character:FindFirstChild("HumanoidRootPart") and player.Character.Humanoid.Health > 0 then
+                          local Vector, onScreen = Camera:worldToViewportPoint(player.Character.HumanoidRootPart.Position)
+                          
+                          if onScreen then
+                              ESP.Position = Vector2.new(Vector.X, Vector.Y - 25)
+                              ESP.Text = player.Name .. " | " .. math.round(player.Character.Humanoid.Health) .. "HP"
+                              ESP.Visible = true
+                          else
+                              ESP.Visible = false
+                          end
+                      else
+                          ESP.Visible = false
+                      end
+                  end)
+              end
+              
+              for _, player in pairs(Players:GetPlayers()) do
+                  if player ~= LocalPlayer then
+                      createESP(player)
+                  end
+              end
+              
+              Players.PlayerAdded:Connect(function(player)
+                  createESP(player)
+              end)
+          end
+      end)
+   end,
+})
+
+VisualizationTab:CreateToggle({
+   Name = "Tracers",
+   CurrentValue = false,
+   Flag = "Tracers",
+   Callback = function(Value)
+      GlitchPrevent1(function()
+          if Value then
+              local Players = game:GetService("Players")
+              local RunService = game:GetService("RunService")
+              local LocalPlayer = Players.LocalPlayer
+              local Camera = workspace.CurrentCamera
+              
+              local function createTracer(player)
+                  local Tracer = Drawing.new("Line")
+                  Tracer.Visible = false
+                  Tracer.Color = Color3.fromRGB(48, 113, 169)
+                  Tracer.Thickness = 1
+                  Tracer.Transparency = 1
+                  
+                  RunService.RenderStepped:Connect(function()
+                      if player.Character and player.Character:FindFirstChild("HumanoidRootPart") and player.Character:FindFirstChild("Humanoid") and player.Character.Humanoid.Health > 0 then
+                          local Vector, onScreen = Camera:worldToViewportPoint(player.Character.HumanoidRootPart.Position)
+                          
+                          if onScreen then
+                              Tracer.From = Vector2.new(Camera.ViewportSize.X / 2, Camera.ViewportSize.Y / 1)
+                              Tracer.To = Vector2.new(Vector.X, Vector.Y)
+                              Tracer.Visible = true
+                          else
+                              Tracer.Visible = false
+                          end
+                      else
+                          Tracer.Visible = false
+                      end
+                  end)
+              end
+              
+              for _, player in pairs(Players:GetPlayers()) do
+                  if player ~= LocalPlayer then
+                      createTracer(player)
+                  end
+              end
+              
+              Players.PlayerAdded:Connect(function(player)
+                  createTracer(player)
+              end)
+          end
+      end)
+   end,
+})
+
+game.StarterGui:SetCore("SendNotification", {
+    Title = "@baconscript_",
+    Text = "https://www.youtube.com/@baconscript_",
+    Duration = 5
+})
+
+end, function(err)
+    warn("Layer 2 Error: " .. tostring(err))
+    
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "Astral.lua Error",
+        Text = "Layer 2 error occurred. Attempting recovery...",
+        Duration = 5
+    })
+    
+    return true
+end)
+end, function(err)
+    warn("Layer 1 Error: " .. tostring(err))
+    
+    game.StarterGui:SetCore("SendNotification", {
+        Title = "Astral.lua Critical Error",
+        Text = "Fatal error occurred. Please reload the script.",
+        Duration = 5
+    })
+end)
